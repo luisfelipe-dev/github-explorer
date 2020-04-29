@@ -10,6 +10,21 @@ export default createGlobalStyle`
     outline: 0;
   }
 
+  ::-webkit-scrollbar {
+      width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+      background-color: #eaeaea;
+  }
+  ::-webkit-scrollbar-thumb {
+      background-color: #b0b0b0;
+      border-radius: 6px;
+      cursor: pointer;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #04d361;
+  }
+
   body{
     background: #F0F0F5 url(${githubBackground}) no-repeat 70% top;
     -webkit-font-smoothing: antialiased;
