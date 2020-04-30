@@ -36,6 +36,8 @@ const Dashboard: React.FC = () => {
       '@GithubExplorer:Repositories',
       JSON.stringify(repositories),
     );
+
+    localStorage.setItem('themeColor', 'dark');
   }, [repositories]);
 
   const handleAddRepository = async (
@@ -61,6 +63,16 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleDeleteRepository = (repository: Repository): void => {
+    const repositoryIndex = repositories.findIndex(
+      (repo) => repo.full_name === repository.full_name,
+    );
+
+    repositories.splice(repositoryIndex, 1);
+
+    setRepositories([...repositories]);
+  };
+
   return (
     <Style.Dashboard>
       <img src={logoImg} alt="Github Explorer" />
@@ -73,7 +85,7 @@ const Dashboard: React.FC = () => {
             setInputError('');
             setNewRepo(e.target.value);
           }}
-          placeholder="Digite o nome do repositório"
+          placeholder="Digite o autor/nome do repositório"
         />
         <button type="submit">Pesquisar</button>
       </Style.Form>
@@ -83,18 +95,26 @@ const Dashboard: React.FC = () => {
       <Style.Repositories>
         {repositories &&
           repositories.map((repository) => (
-            <Link key={repository.full_name} to={`/repositories/${repository.full_name}`}>
-              <img
-                src={repository.owner.avatar_url}
-                alt={repository.owner.login}
-              />
-              <div>
-                <strong>{repository.full_name}</strong>
-                <p>{repository.description}</p>
-              </div>
+            <div className="container-link">
+              <Link
+                key={repository.full_name}
+                to={`/repositories/${repository.full_name}`}
+              >
+                <img
+                  src={repository.owner.avatar_url}
+                  alt={repository.owner.login}
+                />
+                <div>
+                  <strong>{repository.full_name}</strong>
+                  <p>{repository.description}</p>
+                </div>
 
-              <FiChevronRight size={20} />
-            </Link>
+                <FiChevronRight size={20} />
+              </Link>
+              <button onClick={() => handleDeleteRepository(repository)}>
+                remover repositório
+              </button>
+            </div>
           ))}
       </Style.Repositories>
     </Style.Dashboard>

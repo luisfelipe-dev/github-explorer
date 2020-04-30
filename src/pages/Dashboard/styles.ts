@@ -15,7 +15,7 @@ export const Dashboard = styled.div`
     line-height: 56px;
 
     font-weight: bold;
-    color: #3a3a3a;
+    color: ${(props) => props.theme.colors.text};
     font-size: 3rem;
     margin-top: 80px;
   }
@@ -30,9 +30,10 @@ export const Form = styled.form<FormProps>`
     flex: 1;
     height: 70px;
     padding: 0 24px;
-    color: #3a3a3a;
+    color: ${(props) => props.theme.colors.text};
+    background-color: ${(props) => props.theme.colors.secondary};
+    border: 2px solid ${(props) => props.theme.colors.border};
     border-radius: 5px 0px 0px 5px;
-    border: 2px solid #fff;
     border-right: 0;
 
     ${(props) =>
@@ -67,8 +68,48 @@ export const Repositories = styled.div`
   margin-top: 80px;
   max-width: 700px;
 
+  .container-link {
+    width: 100%;
+    position: relative;
+    transition: transform 0.2s;
+
+    & + .container-link {
+      margin-top: 1.9rem;
+    }
+
+    button {
+      position: absolute;
+      top: -25px;
+      transition:all 1s linear;
+      right: -10px;
+      opacity: 0;
+
+      z-index: 4;
+
+      color: #c53030;
+      font-weight: bold;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+
+      &:hover{
+        color: #444;
+      }
+    }
+
+    &:hover {
+      transform: translateX(10px);
+
+      button {
+        opacity: 1;
+        right: 4px;
+
+      }
+    }
+  }
+
   a {
-    background: #fff;
+    background: ${(props) => props.theme.colors.secondary};
     border-radius: 5px;
     width: 100%;
     padding: 24px;
@@ -76,14 +117,9 @@ export const Repositories = styled.div`
 
     display: flex;
     align-items: center;
-    transition: transform 0.2s;
 
     & + a {
       margin-top: 1rem;
-    }
-
-    &:hover {
-      transform: translateX(10px);
     }
 
     img {
@@ -97,7 +133,7 @@ export const Repositories = styled.div`
       flex: 1;
       strong {
         font-size: 20px;
-        color: #3d3d4d;
+        color: ${(props) => props.theme.colors.text};
       }
 
       p {

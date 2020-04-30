@@ -72,8 +72,6 @@ const Repository: React.FC = () => {
   }, [loading]);
 
   function handleScroll() {
-    console.log('page', page, 'total', totalPage, 'loading', loading);
-
     if (
       window.innerHeight + document.documentElement.scrollTop <
         document.documentElement.offsetHeight ||
@@ -82,7 +80,7 @@ const Repository: React.FC = () => {
     )
       return;
 
-    console.log(totalPage);
+    setPage(page + 1);
   }
 
   function getPosts() {
@@ -96,7 +94,7 @@ const Repository: React.FC = () => {
         <img src={logoImg} alt="Github Explorer" />
         <Link to="/">
           <FiChevronLeft size={16} />
-          Voltar {page} {totalPage}
+          Voltar
         </Link>
       </Style.Header>
 
