@@ -37,7 +37,12 @@ const Repository: React.FC = () => {
 
   const [repository, setRepository] = useState<Repository | null>(null);
   const [issues, setIssues] = useState<Issue[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [posts, setPosts] = useState<Issue[]>([]);
+
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [postsPage] = useState(5);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
@@ -45,44 +50,44 @@ const Repository: React.FC = () => {
       .then((response) => setRepository(response.data));
 
     api.get(`repos/${params.repository}/issues`).then((response) => {
-      setIssues(response.data.slice(0, 5));
+      setPosts(response.data);
+      setTotalPage(response.data.length / postsPage);
     });
   }, [params.repository]);
 
-  function getMore() {
-    api.get(`repos/${params.repository}/issues`).then((response) => {
-      setIssues([
-        ...issues,
-        ...response.data.slice(issues.length, issues.length + 5),
-      ]);
-    });
-  }
+  useEffect(() => {
+    console.log('page', page, 'total', totalPage, 'loading', loading);
+    setIssues(posts.splice(0, postsPage));
+  }, [posts]);
 
+  useEffect(() => {
+    getPosts();
+    setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!isFetching) return;
-    fetchMoreListItems();
-  }, [isFetching]);
+  }, [loading]);
 
   function handleScroll() {
+    console.log('page', page, 'total', totalPage, 'loading', loading);
+
     if (
-      window.innerHeight + document.documentElement.scrollTop !==
-      document.documentElement.offsetHeight
+      window.innerHeight + document.documentElement.scrollTop <
+        document.documentElement.offsetHeight ||
+      page === totalPage ||
+      loading
     )
       return;
-    setIsFetching(true);
+
+    console.log(totalPage);
   }
 
-  function fetchMoreListItems() {
-    setTimeout(() => {
-      getMore();
-      setIsFetching(false);
-    }, 2000);
+  function getPosts() {
+    setIssues([...issues, ...posts.splice(issues.length, postsPage)]);
+    setLoading(true);
   }
 
   return (
@@ -91,7 +96,7 @@ const Repository: React.FC = () => {
         <img src={logoImg} alt="Github Explorer" />
         <Link to="/">
           <FiChevronLeft size={16} />
-          Voltar
+          Voltar {page} {totalPage}
         </Link>
       </Style.Header>
 
@@ -107,7 +112,6 @@ const Repository: React.FC = () => {
               <p>{repository.description}</p>
             </div>
           </header>
-
           <ul>
             <li>
               <strong>{repository.stargazers_count}</strong>
@@ -141,11 +145,6 @@ const Repository: React.FC = () => {
             <FiChevronRight size={20} />
           </a>
         ))}
-        {isFetching && (
-          <div className="carregando">
-            <p>Fetching more list items...</p>
-          </div>
-        )}
       </Style.Issues>
     </>
   );
