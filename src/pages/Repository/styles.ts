@@ -77,6 +77,12 @@ export const RepositoryInfo = styled.div`
       }
     }
   }
+
+  .carregando{
+    p{
+      font-size: 20px;
+    }
+  }
 `;
 
 export const Issues = styled.div`

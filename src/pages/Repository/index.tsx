@@ -37,16 +37,53 @@ const Repository: React.FC = () => {
 
   const [repository, setRepository] = useState<Repository | null>(null);
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     api
       .get(`repos/${params.repository}`)
       .then((response) => setRepository(response.data));
 
-    api
-      .get(`repos/${params.repository}/issues`)
-      .then((response) => setIssues(response.data));
+    api.get(`repos/${params.repository}/issues`).then((response) => {
+      setIssues(response.data.slice(0, 5));
+    });
   }, [params.repository]);
+
+  function getMore() {
+    api.get(`repos/${params.repository}/issues`).then((response) => {
+      setIssues([
+        ...issues,
+        ...response.data.slice(issues.length, issues.length + 5),
+      ]);
+    });
+  }
+
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!isFetching) return;
+    fetchMoreListItems();
+  }, [isFetching]);
+
+  function handleScroll() {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+      document.documentElement.offsetHeight
+    )
+      return;
+    setIsFetching(true);
+  }
+
+  function fetchMoreListItems() {
+    setTimeout(() => {
+      getMore();
+      setIsFetching(false);
+    }, 2000);
+  }
 
   return (
     <>
@@ -70,6 +107,7 @@ const Repository: React.FC = () => {
               <p>{repository.description}</p>
             </div>
           </header>
+
           <ul>
             <li>
               <strong>{repository.stargazers_count}</strong>
@@ -89,7 +127,12 @@ const Repository: React.FC = () => {
 
       <Style.Issues>
         {issues.map((issue) => (
-          <a key={issue.id} href={issue.html_url} target="_blank">
+          <a
+            key={issue.id}
+            href={issue.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div>
               <strong>{issue.title}</strong>
               <p>{issue.user.login}</p>
@@ -98,6 +141,11 @@ const Repository: React.FC = () => {
             <FiChevronRight size={20} />
           </a>
         ))}
+        {isFetching && (
+          <div className="carregando">
+            <p>Fetching more list items...</p>
+          </div>
+        )}
       </Style.Issues>
     </>
   );
