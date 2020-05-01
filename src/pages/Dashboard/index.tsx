@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import * as Style from './styles';
-import logoImg from '../../assets/logo.svg';
+
 
 interface Repository {
   full_name: string;
@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Style.Dashboard>
-      <img src={logoImg} alt="Github Explorer" />
+
       <h1>Explore repositórios no Github.</h1>
 
       <Style.Form onSubmit={handleAddRepository} hasError={!!inputError}>

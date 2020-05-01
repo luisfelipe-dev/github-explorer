@@ -6,9 +6,6 @@ interface FormProps {
 }
 
 export const Dashboard = styled.div`
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-
   h1 {
     width: 100%;
     max-width: 450px;

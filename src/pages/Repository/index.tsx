@@ -90,14 +90,6 @@ const Repository: React.FC = () => {
 
   return (
     <>
-      <Style.Header>
-        <img src={logoImg} alt="Github Explorer" />
-        <Link to="/">
-          <FiChevronLeft size={16} />
-          Voltar
-        </Link>
-      </Style.Header>
-
       {repository && (
         <Style.RepositoryInfo>
           <header>
